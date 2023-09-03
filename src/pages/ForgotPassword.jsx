@@ -11,7 +11,7 @@ export const ForgotPassword = () => {
   return (
     <section className='text-center text-3sl mb-12 mt-6 font-bold '>
       <h1>Forgot password</h1>
-      <div className='flex justify-center flex-wrap'>
+      <div className='flex justify-center flex-wrap'>  
         <div className='md:w-[67%] lg:w-[50%] md:mb-6'>
           <img src="https://plus.unsplash.com/premium_photo-1663089688180-444ff0066e5d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80" 
           alt="key"  className='w-full rounded-2xl'/>

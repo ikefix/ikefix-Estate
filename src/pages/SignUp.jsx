@@ -1,8 +1,13 @@
 import React from 'react'
 import  {useState} from 'react';
 import {AiFillEyeInvisible, AiFillEye} from 'react-icons/ai';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import { OAuth } from '../component/OAuth';
+import { getAuth, createUserWithEmailAndPassword, updateProfile} from "firebase/auth";
+import {db} from "../firebase";
+import { setDoc, doc, serverTimestamp  } from "firebase/firestore";
+
+import { toast } from 'react-toastify';
 
 export const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false)
@@ -11,11 +16,38 @@ export const SignUp = () => {
     email:" ", password:"",
   });
   const {name,email, password} = formData; 
+  const navigate = useNavigate()
   function onChange(e){
     setFormData((prevState)=>({
         ...prevState, 
         [e.target.id]: e.target.value,
     }))
+  }
+  async function onSubmit(e){
+    e.preventDefault()
+
+    try {
+      const auth = getAuth();
+      const userCredential = await
+      createUserWithEmailAndPassword(
+        auth,
+        email, 
+        password);
+        updateProfile(auth.currentUser, {
+          displayName: name
+        })
+      const user = userCredential.user;
+      const formDataCopy = {...formData}
+      delete formDataCopy.password;
+      formDataCopy.timeStamp = serverTimestamp();
+      
+      await setDoc(doc(db, "users", user.uid),formDataCopy)
+      toast.success("congratulations")
+      navigate("/");
+
+    } catch (error) {
+      toast.error("something went wrong")
+    }
   }
   return (
     <section className='text-center text-3sl mb-12 mt-6 font-bold '>
@@ -26,7 +58,7 @@ export const SignUp = () => {
           alt="key"  className='w-full rounded-2xl'/>
         </div>
         <div className='w-full md:w-[67%] lg:w-[40%] lg:ml-20'>
-          <form action="">
+          <form onSubmit={onSubmit}>
             <div className=' relative mb-4'>
               <input className='w-full px-4 py-2 text-xl mb-5 text-gray-700 bg-white border-gray-300
                rounded transition ease-in-out'type="text" id="name" value={name}
